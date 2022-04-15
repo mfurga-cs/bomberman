@@ -1,23 +1,13 @@
 #include <cstdio>
 #include <vector>
 #include <SDL2/SDL.h>
-#include "object.h"
+
+#include "map.h"
+#include "renderer.h"
+#include "objects/wall.h"
 
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 800
-
-#define MAP_WIDTH 1200
-#define MAP_HEIGHT 720
-
-#define MAP_POS_X   0
-#define MAP_POS_Y   80
-
-
-#define TILE_WIDTH 48
-#define TILE_HEIGHT 48
-
-#define MAP_TILES_WIDTH 25
-#define MAP_TILES_HEIGHT 15
 
 // void render() {
 
@@ -68,102 +58,14 @@
 // }
 
 
-
-
-class Map {
- public:
-  Map(SDL_Surface *s, int w, int h, int x, int y)
-    : s_(s), w_(w), h_(h), x_(x), y_(y) {}
-
-  int load_tiles(const char *fname) {
-    t_ = SDL_LoadBMP(fname);
-    if (t_ == NULL) {
-      puts("SDL_LoadBMP failed");
-      return 1;
-    }
-    return 0;
-  }
-
-  int load_map(const char *fname) {
-    char map[(MAP_TILES_WIDTH + 1) * MAP_TILES_HEIGHT];
-
-    FILE *f = fopen(fname, "r");
-    if (f == NULL) {
-      printf("Failed to open map %s\n", fname);
-      return 1;
-    }
-    fread(map, 1, sizeof(map), f);
-    fclose(f);
-
-    for (int h = 0; h < MAP_TILES_HEIGHT; h++) {
-      for (int w = 0; w < MAP_TILES_WIDTH; w++) {
-
-        int x = w * TILE_WIDTH;
-        int y = h * TILE_HEIGHT;
-
-        char c = map[h * (MAP_TILES_WIDTH + 1) + w];
-
-        switch (c) {
-          case 'W': {
-            SDL_Rect src = { .x = 0, .y = 0, .w = TILE_WIDTH, .h = TILE_HEIGHT };
-            objects_.push_back(new Object(OBJ_WALL, x, y, TILE_WIDTH, TILE_HEIGHT, src));
-            break;
-          }
-          case 'S': {
-            SDL_Rect src = { .x = TILE_WIDTH, .y = 0, .w = TILE_WIDTH, .h = TILE_HEIGHT };
-            objects_.push_back(new Object(OBJ_STONE, x, y, TILE_WIDTH, TILE_HEIGHT, src));
-            break;
-          }
-          case ' ': {
-            SDL_Rect src = { .x = TILE_WIDTH * 2, .y = 0, .w = TILE_WIDTH, .h = TILE_HEIGHT };
-            objects_.push_back(new Object(OBJ_GRASS, x, y, TILE_WIDTH, TILE_HEIGHT, src));
-            break;
-          }
-          case 'P': {
-            SDL_Rect src = { .x = 0, .y = TILE_WIDTH, .w = TILE_WIDTH, .h = TILE_HEIGHT };
-            objects_.push_back(new Player(x, y, TILE_WIDTH, TILE_HEIGHT, src));
-            break;
-          }
-        }
-      }
-    }
-  }
-
-  void render() {
-    for (Object *o : objects_) {
-      o->render(s_, t_);
-    }
-  }
-
-  int x(int x) const {
-    return x_ + x;
-  }
-
-  int y(int y) const {
-    return y_ + y;
-  }
-
- private:
-  SDL_Surface *s_;
-  SDL_Surface *t_;
-  std::vector<Object*> objects_;
-  int w_;
-  int h_;
-  int x_;
-  int y_;
-};
-
-
 class Game {
  public:
   Game() {}
 
   ~Game() {
-
     if (map_ != nullptr) {
       delete map_;
     }
-
     SDL_DestroyWindow(window_);
     SDL_Quit();
   }
@@ -186,22 +88,25 @@ class Game {
       return 2;
     }
 
-    window_surface_ = SDL_GetWindowSurface(window_);
-    if (window_surface_ == NULL) {
+    SDL_Surface *window_surface = SDL_GetWindowSurface(window_);
+    if (window_surface == NULL) {
       SDL_DestroyWindow(window_);
       SDL_Quit();
       return 3;
     }
 
+    renderer_.set_window_surface(window_surface);
+    if (renderer_.load_tiles("assets/tiles.bmp") != 0) {
+      return 4;
+    }
     return 0;
   }
 
   void start() {
-
-    map_ = new Map(window_surface_, MAP_WIDTH, MAP_HEIGHT, MAP_POS_X, MAP_POS_Y);
-    map_->load_tiles("assets/tiles.bmp");
+    map_ = new Map(renderer_, MAP_WIDTH, MAP_HEIGHT, MAP_POS_X, MAP_POS_Y);
     map_->load_map("assets/map1");
-    map_->render();
+    // map_->load_tiles("assets/tiles.bmp");
+    // map_->render();
 
     // Init timers.
     time_ = SDL_GetTicks();
@@ -244,7 +149,7 @@ class Game {
   }
 
   SDL_Window *window_;
-  SDL_Surface *window_surface_;
+  Renderer renderer_;
 
   bool key_pressed_[1024];
 
@@ -262,8 +167,6 @@ int main(void)
     puts("Game initialization failed.");
     return 1;
   }
-
   game.start();
-
   return 0;
 }

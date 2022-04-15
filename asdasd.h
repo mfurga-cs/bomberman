@@ -1,15 +1,5 @@
 #pragma once
 
-#define PLAYER_INIT_DIRECTION DIRECTION_DOWN
-#define PLAYER_INIT_VELOCITY 10
-
-enum Direction {
-  DIRECTION_UP = 0,
-  DIRECTION_RIGHT,
-  DIRECTION_DOWN,
-  DIRECTION_LEFT
-};
-
 enum ObjectType {
   OBJ_WALL = 0,
   OBJ_STONE,
@@ -19,34 +9,33 @@ enum ObjectType {
 
 class Object {
  public:
-  Object(ObjectType t, int x, int y, int w, int h, SDL_Rect r)
+  Object(int x, int y, int w, int h, SDL_Rect r)
     : t_(t), x_(x), y_(y), w_(w), h_(h), r_(r) {} 
 
+  int get_x() const { return x_; }
 
-  ObjectType type() {
-    return t_;
-  }
+  int get_y() const { return y_; }
 
-  int x() const {
-    return x_;
-  }
-
-  int y() const {
-    return y_;
-  }
-
-  void render(SDL_Surface *window, SDL_Surface *tiles) {
-    SDL_Rect dst = { .x = x_, .y = y_, .w = 48, .h = 48 };
-    SDL_BlitSurface(tiles, &r_, window, &dst);
-  }
+  virtual ObjectType get_type();
+  virtual void render();
 
  protected:
   int x_;
   int y_;
   int w_;
   int h_;
-  ObjectType t_;
-  SDL_Rect r_;
+  ObjectType type_;
+};
+
+
+#define PLAYER_INIT_DIRECTION DIRECTION_DOWN
+#define PLAYER_INIT_VELOCITY 10
+
+enum Direction {
+  DIRECTION_UP = 0,
+  DIRECTION_RIGHT,
+  DIRECTION_DOWN,
+  DIRECTION_LEFT
 };
 
 class Player: public Object {
