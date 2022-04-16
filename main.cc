@@ -4,7 +4,6 @@
 
 #include "map.h"
 #include "renderer.h"
-#include "objects/wall.h"
 
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 800
@@ -99,16 +98,16 @@ class Game {
     if (renderer_.load_tiles("assets/tiles.bmp") != 0) {
       return 4;
     }
+
+    map_ = new Map(renderer_);
+    if (map_->load_map("assets/map1") != 0) {
+      return 5;
+    }
+
     return 0;
   }
 
   void start() {
-    map_ = new Map(renderer_, MAP_WIDTH, MAP_HEIGHT, MAP_POS_X, MAP_POS_Y);
-    map_->load_map("assets/map1");
-    // map_->load_tiles("assets/tiles.bmp");
-    // map_->render();
-
-    // Init timers.
     time_ = SDL_GetTicks();
     diff_ = 0;
 
@@ -145,13 +144,37 @@ class Game {
  private:
 
   void render_frame() {
+    Player *player = map_->get_player();
 
+    bool move = false;
+
+    if (key_pressed_[SDL_SCANCODE_UP]) {
+      player->set_direction(DIRECTION_UP);
+      move = true;
+    } else if (key_pressed_[SDL_SCANCODE_RIGHT]) {
+      player->set_direction(DIRECTION_RIGHT);
+      move = true;
+    } else if (key_pressed_[SDL_SCANCODE_DOWN]) {
+      player->set_direction(DIRECTION_DOWN);
+      move = true;
+    } else if (key_pressed_[SDL_SCANCODE_LEFT]) {
+      player->set_direction(DIRECTION_LEFT);
+      move = true;
+    }
+
+    if (move) {
+      player->move(diff_);
+    } else {
+      player->stop();
+    }
+    
+    map_->render();
   }
 
   SDL_Window *window_;
   Renderer renderer_;
 
-  bool key_pressed_[1024];
+  bool key_pressed_[1024] = {false};
 
   int time_;
   int diff_;

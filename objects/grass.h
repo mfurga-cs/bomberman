@@ -3,14 +3,14 @@
 #include "object.h"
 #include "../renderer.h"
 
-class Wall: public Object {
+class Grass: public Object {
  public:
-  Wall(Map *map, int x, int y, int w, int h)
+  Grass(Map *map, int x, int y, int w, int h)
     : Object(map, x, y, w, h) {}
-  ~Wall() {}
+  ~Grass() {}
 
   ObjectType get_type() const {
-    return OBJ_WALL;
+    return OBJ_GRASS;
   }
 
   void render(const Renderer &renderer) {
@@ -18,6 +18,6 @@ class Wall: public Object {
   }
 
  private:
-  constexpr static int TILE_X = 0;
+  constexpr static int TILE_X = TILE_WIDTH * 2;
   constexpr static int TILE_Y = 0; 
 };
