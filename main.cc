@@ -8,55 +8,6 @@
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 800
 
-// void render() {
-
-//   if (key_pressed[SDL_SCANCODE_DOWN]) {
-
-//     if (time_in > 10) {
-//       {
-//         printf("%d\n", time_in);
-//         SDL_Rect src { .x = TILE_WIDTH * 2, .y = 0, .w = TILE_WIDTH, .h = TILE_HEIGHT };
-//         SDL_Rect dst { .x = init_pos_x, .y = init_pos_y, .w = 48, .h = 48 };
-//         SDL_BlitSurface(map_surface, &src, window_surface, &dst);
-//       }
-
-//       SDL_Rect src;
-
-//       if (before == 1) {
-//         if (time_animation > 100) {
-//           src.x = 0; src.y = 102; src.w = 48; src.h = 48;
-//           before = 2;
-//           time_animation = 0;
-//         } else {
-//           src.x = 0; src.y = 51; src.w = 48; src.h = 48;
-//         }
-//       } else if (before == 2 || before == 0) {
-//         if (time_animation > 100) {
-//           src.x = 0; src.y = 51; src.w = 48; src.h = 48;
-//           before = 1;
-//           time_animation = 0;
-//         } else {
-//           src.x = 0; src.y = 102; src.w = 48; src.h = 48;
-//         }
-//       }
-      
-//       SDL_Rect dst { .x = init_pos_x, .y = init_pos_y + 1, .w = 48, .h = 48 };
-//       SDL_BlitSurface(character_surface, &src, window_surface, &dst);
-//       init_pos_y += 1;
-//       time_in = 0;
-//     }
-
-//     time_in += time_diff;
-//     time_animation += time_diff;
-//   } else {
-//     SDL_Rect src { .x = 0, .y = 0, .w = TILE_WIDTH, .h = TILE_HEIGHT };
-//     SDL_Rect dst { .x = init_pos_x, .y = init_pos_y, .w = 48, .h = 48 };
-//     SDL_BlitSurface(character_surface, &src, window_surface, &dst);
-//     time_in = 0;
-//   }
-// }
-
-
 class Game {
  public:
   Game() {}

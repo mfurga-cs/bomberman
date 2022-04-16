@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 #include "renderer.h"
 #include "objects/object.h"
@@ -24,6 +25,7 @@ class Map {
   void render();
 
   std::vector<Object *>& get_objects();
+
   Player *get_player() const;
 
  private:

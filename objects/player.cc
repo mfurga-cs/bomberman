@@ -49,6 +49,13 @@ void Player::move(int time) {
   int px = x_;
   int py = y_;
 
+  for (Object *o: map_->get_objects()) {
+    if (o->get_type() != OBJ_GRASS) {
+      continue;
+    }
+    move_jump(o);
+  }
+
   switch (direction_) {
     case DIRECTION_UP:
       y_ -= 1;
@@ -68,7 +75,6 @@ void Player::move(int time) {
     if (o->get_type() == OBJ_GRASS) {
       continue;
     }
-
     if (o->check_collision(*this)) {
       x_ = px;
       y_ = py;
@@ -82,6 +88,42 @@ void Player::move(int time) {
     tile_style_ = 3;
   } else if (tile_style_ == 3) {
     tile_style_ = 2;
+  }
+}
+
+void Player::move_jump(Object *o) {
+  int x1, x2;
+  int y1, y2;
+
+  switch (direction_) {
+    case DIRECTION_UP:
+    case DIRECTION_DOWN:
+
+      if ((o->get_y() + o->get_h() != y_) && (o->get_y() != y_ + h_)) {
+        return;
+      }
+
+      x1 = std::max(x_, o->get_x());
+      x2 = std::min(x_ + w_, o->get_x() + o->get_w());
+
+      if (x2 - x1 >= o->get_w() - JUMP_FROM) {
+        x_ = o->get_x();
+      }
+    break;
+    case DIRECTION_LEFT:
+    case DIRECTION_RIGHT:
+
+      if ((o->get_x() + o->get_w() != x_) && (o->get_x() != x_ + w_)) {
+        return;
+      }
+
+      y1 = std::max(y_, o->get_y());
+      y2 = std::min(y_ + h_, o->get_y() + o->get_h());
+
+      if (y2 - y1 >= o->get_h() - JUMP_FROM) {
+        y_ = o->get_y();
+      }
+    break;
   }
 }
 

@@ -14,7 +14,7 @@ class Player: public Object {
  public:
   Player(Map *map, int x, int y, int w, int h)
     : Object(map, x, y, w, h), direction_(DIRECTION_DOWN), tile_style_(1) {
-      set_velocity(200);
+      set_velocity(150);
     }
   ~Player() {}
 
@@ -31,10 +31,15 @@ class Player: public Object {
   void stop();
 
  private:
+
+  void move_jump(Object *o);
+
   Direction direction_;
   int velocity_;
   int move_time_ = 0;
 
   // TODO: Move to animation
   int tile_style_;
+
+  constexpr static int JUMP_FROM = 8;
 };
