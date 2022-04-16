@@ -8,13 +8,15 @@ enum ObjectType {
   OBJ_WALL = 0,
   OBJ_STONE,
   OBJ_GRASS,
+  OBJ_BOMB,
   OBJ_PLAYER
 };
 
 class Object {
  public:
   Object(Map *map, int x, int y, int w, int h)
-    : map_(map), x_(x), y_(y), w_(w), h_(h) {} 
+    : map_(map), x_(x), y_(y), w_(w), h_(h) {}
+  virtual ~Object() {};
 
   int get_x() const { return x_; }
 

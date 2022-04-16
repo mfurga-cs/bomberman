@@ -1,4 +1,5 @@
 #include "player.h"
+#include "bomb.h"
 #include "../map.h"
 
 ObjectType Player::get_type() const {
@@ -72,7 +73,7 @@ void Player::move(int time) {
   }
 
   for (Object *o: map_->get_objects()) {
-    if (o->get_type() == OBJ_GRASS) {
+    if (o->get_type() == OBJ_GRASS || o->get_type() == OBJ_BOMB) {
       continue;
     }
     if (o->check_collision(*this)) {
@@ -82,12 +83,17 @@ void Player::move(int time) {
     }
   }
 
-  if (tile_style_ == 1) {
-    tile_style_ = 2;
-  } else if (tile_style_ == 2) {
-    tile_style_ = 3;
-  } else if (tile_style_ == 3) {
-    tile_style_ = 2;
+  last_animation_++;
+
+  if (last_animation_ == ANIMATION_PER_PIXELS) {
+    if (tile_style_ == 1) {
+      tile_style_ = 2;
+    } else if (tile_style_ == 2) {
+      tile_style_ = 3;
+    } else if (tile_style_ == 3) {
+      tile_style_ = 2;
+    }
+    last_animation_ = 0;
   }
 }
 
@@ -125,6 +131,44 @@ void Player::move_jump(Object *o) {
       }
     break;
   }
+}
+
+void Player::place_bomb() {
+  std::vector<Object *>& objs = map_->get_objects();
+
+  int x, y;
+
+  for (Object *o: objs) {
+    if (o->get_type() != OBJ_GRASS) {
+      continue;
+    }
+
+    int x1 = std::max(x_, o->get_x());
+    int x2 = std::min(x_ + w_, o->get_x() + o->get_w());
+
+    int y1 = std::max(y_, o->get_y());
+    int y2 = std::min(y_ + h_, o->get_y() + o->get_h());
+
+    if ((x2 - x1 >= o->get_w() / 2) && (y2 - y1 >= o->get_h() / 2)) {
+      x = o->get_x();
+      y = o->get_y();
+      break;
+    }
+  }
+
+  Bomb *bomb = new Bomb(map_, x, y, TILE_WIDTH, TILE_HEIGHT);
+
+  for (Object *o: objs) {
+    if (o->get_type() != OBJ_BOMB) {
+      continue;
+    }
+    if (o->check_collision(*bomb)) {
+      delete bomb;
+      return;
+    }
+  }
+
+  objs.push_back(bomb);
 }
 
 void Player::stop() {

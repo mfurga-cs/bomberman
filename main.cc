@@ -2,6 +2,7 @@
 #include <vector>
 #include <SDL2/SDL.h>
 
+#include "objects/bomb.h"
 #include "map.h"
 #include "renderer.h"
 
@@ -38,14 +39,13 @@ class Game {
       return 2;
     }
 
-    SDL_Surface *window_surface = SDL_GetWindowSurface(window_);
-    if (window_surface == NULL) {
+    if (renderer_.init(window_) != 0) {
       SDL_DestroyWindow(window_);
       SDL_Quit();
       return 3;
     }
 
-    renderer_.set_window_surface(window_surface);
+
     if (renderer_.load_tiles("assets/tiles.bmp") != 0) {
       return 4;
     }
@@ -87,7 +87,7 @@ class Game {
       diff_ = now - time_;
       time_ = now;
 
-      SDL_UpdateWindowSurface(window_);
+      renderer_.update();
     }
 
   }
@@ -118,6 +118,22 @@ class Game {
     } else {
       player->stop();
     }
+
+    for (Object *obj: map_->get_objects()) {
+      if (obj->get_type() != OBJ_BOMB) {
+        continue;
+      }
+      ((Bomb *)obj)->decrease_explosion_time(diff_);
+    }
+
+    if (key_pressed_[SDL_SCANCODE_SPACE]) {
+      if (space_wait_ == 0) {
+        player->place_bomb();
+      }
+      space_wait_ = 1;
+    } else {
+      space_wait_ = 0;
+    }
     
     map_->render();
   }
@@ -126,6 +142,7 @@ class Game {
   Renderer renderer_;
 
   bool key_pressed_[1024] = {false};
+  int space_wait_ = 0;
 
   int time_;
   int diff_;

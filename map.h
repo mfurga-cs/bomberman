@@ -25,6 +25,7 @@ class Map {
   void render();
 
   std::vector<Object *>& get_objects();
+  void remove_object(Object *o);
 
   Player *get_player() const;
 

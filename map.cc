@@ -1,5 +1,7 @@
 #include <cstdio>
 #include <cstdlib>
+#include <algorithm>
+
 #include "map.h"
 
 int Map::load_map(const char *fname) {
@@ -48,6 +50,14 @@ int Map::load_map(const char *fname) {
 
 std::vector<Object *>& Map::get_objects() {
   return objects_;
+}
+
+void Map::remove_object(Object *o) {
+  std::vector<Object *>::iterator pos = std::find(objects_.begin(), objects_.end(), o);
+  if (pos != objects_.end()) {
+    objects_.erase(pos);
+  }
+  delete o;
 }
 
 Player *Map::get_player() const {
