@@ -32,9 +32,14 @@ class Object {
 
   Map *get_map() { return map_; }
 
+
   bool check_collision(const Object& o) const {
     return x_ < o.x_ + o.w_ && x_ + w_ > o.x_ &&
            y_ < o.y_ + o.h_ && y_ + h_ > o.y_;
+  }
+
+  virtual bool is_static() const {
+    return false;
   }
 
   virtual ObjectType get_type() const = 0;

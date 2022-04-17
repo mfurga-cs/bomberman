@@ -28,25 +28,60 @@ int Map::load_map(const char *fname) {
 
       switch (c) {
         case 'W': {
-          objects_.push_back(new Wall(this, x, y));
+          Wall *wall = new Wall(this, x, y);
+          objects_.push_back(wall);
+          static_objects_[wall->get_static_y()][wall->get_static_x()] = wall;
           break;
         }
         case 'S': {
-          objects_.push_back(new Stone(this, x, y));
+          Stone *stone = new Stone(this, x, y);
+          objects_.push_back(stone);
+          static_objects_[stone->get_static_y()][stone->get_static_x()] = stone;
           break;
         }
         case ' ': {
-          objects_.push_back(new Grass(this, x, y));
+          Grass *grass = new Grass(this, x, y);
+          objects_.push_back(grass);
+          static_objects_[grass->get_static_y()][grass->get_static_x()] = grass;
           break;
         }
         case 'P': {
-          objects_.push_back(new Grass(this, x, y));
+          Grass *grass = new Grass(this, x, y);
+          objects_.push_back(grass);
+          static_objects_[grass->get_static_y()][grass->get_static_x()] = grass;
+
           player_ = new Player(this, x, y);
           break;
         }
       }
     }
   }
+
+
+  // for (int h = 0; h < MAP_HEIGHT_IN_TILES; h++) {
+  //   for (int w = 0; w < MAP_WIDTH_IN_TILES; w++) {
+
+  //     if (static_objects_[h][w] == nullptr) {
+  //       printf("N");
+  //       continue;
+  //     }
+
+  //     switch (static_objects_[h][w]->get_type()) {
+  //       case OBJ_STONE:
+  //       printf("S");
+  //       break;
+  //       case OBJ_GRASS:
+  //       printf("G");
+  //       break;
+  //       case OBJ_WALL:
+  //       printf("W");
+  //       break;
+  //     }
+  //   }
+  //   printf("\n");
+  // }
+
+  // printf("\n\n");
   
   return 0;
 }
@@ -63,12 +98,33 @@ std::vector<Object *>& Map::get_objects() {
   return objects_;
 }
 
+void Map::add_object(Object *o) {
+  objects_.push_back(o);
+  if (o->is_static() && o->get_type() != OBJ_BOMB) {
+    StaticObject *so = (StaticObject *)o;
+    static_objects_[so->get_static_y()][so->get_static_x()] = so;
+  }
+}
+
 void Map::remove_object(Object *o) {
   std::vector<Object *>::iterator pos = std::find(objects_.begin(), objects_.end(), o);
   if (pos != objects_.end()) {
     objects_.erase(pos);
   }
+
+  if (o->is_static() && o->get_type() != OBJ_BOMB) {
+    StaticObject *so = (StaticObject *)o;
+    static_objects_[so->get_static_y()][so->get_static_x()] = nullptr;
+  }
+
   delete o;
+}
+
+StaticObject *Map::get_static_object(int x, int y) {
+  if (x < 0 || y < 0 || x >= MAP_WIDTH_IN_TILES || y >= MAP_HEIGHT_IN_TILES) {
+    return nullptr;
+  }
+  return static_objects_[y][x];
 }
 
 Player *Map::get_player() const {

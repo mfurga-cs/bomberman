@@ -1,12 +1,25 @@
 #pragma once
 
-class StaticObject {
- public:
-  virtual int get_static_x() const = 0;
-  virtual int get_static_y() const = 0;
+#include "object.h"
 
- private:
-  int static_x;
-  int static_y;
+class StaticObject: public Object {
+ public:
+  StaticObject(Map *map, int x, int y, int w, int h)
+    : Object(map, x, y, w, h) {}
+
+  StaticObject(Map *map, int x, int y)
+    : Object(map, x, y) {}
+
+  bool is_static() const {
+    return true;
+  }
+
+  virtual int get_static_x() const {
+    return x_ / TILE_WIDTH;
+  }
+
+  virtual int get_static_y() const {
+    return y_ / TILE_HEIGHT;
+  }
 };
 

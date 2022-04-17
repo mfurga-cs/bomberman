@@ -1,14 +1,14 @@
 #pragma once
 
-#include "object.h"
+#include "static.h"
 
-class Stone: public Object {
+class Stone: public StaticObject {
  public:
   Stone(Map *map, int x, int y, int w, int h)
-    : Object(map, x, y, w, h) {}
+    : StaticObject(map, x, y, w, h) {}
 
   Stone(Map *map, int x, int y)
-    : Object(map, x, y) {}
+    : StaticObject(map, x, y) {}
 
   ~Stone() {}
 

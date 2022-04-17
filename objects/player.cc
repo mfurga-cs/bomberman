@@ -156,7 +156,8 @@ void Player::place_bomb() {
     }
   }
 
-  Bomb *bomb = new Bomb(map_, x, y);
+  // TODO: Set bomb power
+  Bomb *bomb = new Bomb(map_, x, y, 2);
 
   for (Object *o: objs) {
     if (o->get_type() != OBJ_BOMB) {

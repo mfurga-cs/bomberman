@@ -6,6 +6,7 @@
 #include "config.h"
 #include "renderer.h"
 #include "objects/object.h"
+#include "objects/static.h"
 #include "objects/player.h"
 
 class Map {
@@ -24,6 +25,10 @@ class Map {
   void render_tile(int sx, int sy, int dx, int dy, double angle) const;
 
   std::vector<Object *>& get_objects();
+  StaticObject *get_static_object(int x, int y);
+
+  void add_object(Object *o);
+
   void remove_object(Object *o);
 
   Player *get_player() const;
@@ -39,6 +44,8 @@ class Map {
  private:
  	Renderer renderer_;
   std::vector<Object*> objects_;
+  StaticObject *static_objects_[MAP_HEIGHT_IN_TILES][MAP_WIDTH_IN_TILES] = { nullptr };
+
   Player *player_;
 
   const int x_;

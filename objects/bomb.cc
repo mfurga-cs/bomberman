@@ -1,5 +1,6 @@
 #include "../map.h"
 #include "bomb.h"
+#include "grass.h"
 
 void Bomb::set_explosion_time(int time) {
   explosion_time_ = time;
@@ -11,19 +12,145 @@ int Bomb::get_explosion_time() const {
 
 void Bomb::render() {
   if (explosion_time_ > 0) {
-    map_->render_tile(TILE_X, TILE_Y * tile_style_, x_, y_);
+    map_->render_tile(TILE_BOMB_X, TILE_BOMB_Y * tile_style_, x_, y_);
   } else {
-    map_->render_tile(TILE_WIDTH * 0, TILE_HEIGHT * 4, x_, y_);
+    int sx = this->get_static_x();
+    int sy = this->get_static_y();
 
-    map_->render_tile(TILE_WIDTH * 2, TILE_HEIGHT * 4, x_ + w_, y_);
-    map_->render_tile(TILE_WIDTH * 2, TILE_HEIGHT * 4, x_ - w_, y_, 180);
-    map_->render_tile(TILE_WIDTH * 2, TILE_HEIGHT * 4, x_, y_ + h_, 90);
-    map_->render_tile(TILE_WIDTH * 2, TILE_HEIGHT * 4, x_, y_ - h_, -90);
+    map_->render_tile(TILE_EXPLOSION_CENTER_X, TILE_EXPLOSION_CENTER_Y, x_, y_);
 
-    // map_->render_tile(TILE_WIDTH * 2, TILE_HEIGHT * 4, x_ + 2 * w_, y_);
-    // map_->render_tile(TILE_WIDTH * 2, TILE_HEIGHT * 4, x_ - 2 * w_, y_, 180);
-    // map_->render_tile(TILE_WIDTH * 2, TILE_HEIGHT * 4, x_, y_ + 2 * h_, 90);
-    // map_->render_tile(TILE_WIDTH * 2, TILE_HEIGHT * 4, x_, y_ - 2 * h_, -90);
+    // RIGHT
+    for (int i = 1; i <= power_; i++) {
+      StaticObject *so = map_->get_static_object(sx + i, sy);
+      if (so == nullptr || so->get_type() == OBJ_WALL) {
+        break;
+      }
+
+      if (i == power_) {
+        map_->render_tile(TILE_EXPLOSION_END_X, TILE_EXPLOSION_END_Y, so->get_x(), so->get_y());
+      } else {
+        map_->render_tile(TILE_EXPLOSION_MID_X, TILE_EXPLOSION_MID_Y, so->get_x(), so->get_y());
+      }
+
+      if (so->get_type() == OBJ_STONE) {
+        break;
+      }
+    }
+
+    // LEFT
+    for (int i = 1; i <= power_; i++) {
+      StaticObject *so = map_->get_static_object(sx - i, sy);
+      if (so == nullptr || so->get_type() == OBJ_WALL) {
+        break;
+      }
+
+      if (i == power_) {
+        map_->render_tile(TILE_EXPLOSION_END_X, TILE_EXPLOSION_END_Y, so->get_x(), so->get_y(), 180);
+      } else {
+        map_->render_tile(TILE_EXPLOSION_MID_X, TILE_EXPLOSION_MID_Y, so->get_x(), so->get_y(), 180);
+      }
+
+      if (so->get_type() == OBJ_STONE) {
+        break;
+      }
+    }
+
+    // UP
+    for (int i = 1; i <= power_; i++) {
+      StaticObject *so = map_->get_static_object(sx, sy - i);
+      if (so == nullptr || so->get_type() == OBJ_WALL) {
+        break;
+      }
+
+      if (i == power_) {
+        map_->render_tile(TILE_EXPLOSION_END_X, TILE_EXPLOSION_END_Y, so->get_x(), so->get_y(), -90);
+      } else {
+        map_->render_tile(TILE_EXPLOSION_MID_X, TILE_EXPLOSION_MID_Y, so->get_x(), so->get_y(), -90);
+      }
+
+      if (so->get_type() == OBJ_STONE) {
+        break;
+      }
+    }
+
+    // DOWN
+    for (int i = 1; i <= power_; i++) {
+      StaticObject *so = map_->get_static_object(sx, sy + i);
+      if (so == nullptr || so->get_type() == OBJ_WALL) {
+        break;
+      }
+
+      if (i == power_) {
+        map_->render_tile(TILE_EXPLOSION_END_X, TILE_EXPLOSION_END_Y, so->get_x(), so->get_y(), 90);
+      } else {
+        map_->render_tile(TILE_EXPLOSION_MID_X, TILE_EXPLOSION_MID_Y, so->get_x(), so->get_y(), 90);
+      }
+
+      if (so->get_type() == OBJ_STONE) {
+        break;
+      }
+    }
+  }
+}
+
+void Bomb::remove_objects_() {
+  int sx = this->get_static_x();
+  int sy = this->get_static_y();
+
+  // RIGHT
+  for (int i = 1; i <= power_; i++) {
+    StaticObject *so = map_->get_static_object(sx + i, sy);
+    if (so == nullptr || so->get_type() == OBJ_WALL) {
+      break;
+    }
+
+    if (so->get_type() == OBJ_STONE) {
+      map_->remove_object(so);
+      map_->add_object(new Grass(map_, so->get_x(), so->get_y()));
+      break;
+    }
+  }
+
+  // LEFT
+  for (int i = 1; i <= power_; i++) {
+    StaticObject *so = map_->get_static_object(sx - i, sy);
+    if (so == nullptr || so->get_type() == OBJ_WALL) {
+      break;
+    }
+
+    if (so->get_type() == OBJ_STONE) {
+      map_->remove_object(so);
+      map_->add_object(new Grass(map_, so->get_x(), so->get_y()));
+      break;
+    }
+  }
+
+  // UP
+  for (int i = 1; i <= power_; i++) {
+    StaticObject *so = map_->get_static_object(sx, sy - i);
+    if (so == nullptr || so->get_type() == OBJ_WALL) {
+      break;
+    }
+
+    if (so->get_type() == OBJ_STONE) {
+      map_->remove_object(so);
+      map_->add_object(new Grass(map_, so->get_x(), so->get_y()));
+      break;
+    }
+  }
+
+  // DOWN
+  for (int i = 1; i <= power_; i++) {
+    StaticObject *so = map_->get_static_object(sx, sy + i);
+    if (so == nullptr || so->get_type() == OBJ_WALL) {
+      break;
+    }
+
+    if (so->get_type() == OBJ_STONE) {
+      map_->remove_object(so);
+      map_->add_object(new Grass(map_, so->get_x(), so->get_y()));
+      break;
+    }
   }
 }
 
@@ -39,6 +166,7 @@ void Bomb::decrease_explosion_time(int delta) {
   }
 
   if (-1 * explosion_time_ > ANIMATION_TIME) {
+    remove_objects_();
     map_->remove_object(this);
   }
 }
