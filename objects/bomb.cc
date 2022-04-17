@@ -107,6 +107,7 @@ void Bomb::remove_objects_() {
     if (so->get_type() == OBJ_STONE) {
       map_->remove_object(so);
       map_->add_object(new Grass(map_, so->get_x(), so->get_y()));
+      map_->get_player()->add_points(POINTS_FOR_STONE);
       break;
     }
   }
@@ -121,6 +122,7 @@ void Bomb::remove_objects_() {
     if (so->get_type() == OBJ_STONE) {
       map_->remove_object(so);
       map_->add_object(new Grass(map_, so->get_x(), so->get_y()));
+      map_->get_player()->add_points(POINTS_FOR_STONE);
       break;
     }
   }
@@ -135,6 +137,7 @@ void Bomb::remove_objects_() {
     if (so->get_type() == OBJ_STONE) {
       map_->remove_object(so);
       map_->add_object(new Grass(map_, so->get_x(), so->get_y()));
+      map_->get_player()->add_points(POINTS_FOR_STONE);
       break;
     }
   }
@@ -149,6 +152,7 @@ void Bomb::remove_objects_() {
     if (so->get_type() == OBJ_STONE) {
       map_->remove_object(so);
       map_->add_object(new Grass(map_, so->get_x(), so->get_y()));
+      map_->get_player()->add_points(POINTS_FOR_STONE);
       break;
     }
   }
@@ -167,6 +171,7 @@ void Bomb::decrease_explosion_time(int delta) {
 
   if (-1 * explosion_time_ > ANIMATION_TIME) {
     remove_objects_();
+    map_->get_player()->add_bomb();
     map_->remove_object(this);
   }
 }

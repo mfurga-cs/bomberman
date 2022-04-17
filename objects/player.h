@@ -33,6 +33,12 @@ class Player: public Object {
 
   void set_direction(Direction direction);
 
+  int get_points() const;
+  void add_points(int points);
+
+  void add_bomb();
+  int get_bomb_power() const;
+ 
   void move(int time);
 
   void stop();
@@ -45,6 +51,8 @@ class Player: public Object {
   Direction direction_;
   int velocity_;
   int move_time_ = 0;
+  int points_ = 0;
+  int bombs_ = 1;
 
   // TODO: Move to animation
   int tile_style_;

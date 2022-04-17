@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -Wextra -lSDL2
+CFLAGS = -Wall -Wextra -lSDL2 -lSDL2_ttf
 CFLAGS_DEBUG = -g
 
 FILES = objects/player.cc objects/bomb.cc renderer.cc map.cc main.cc

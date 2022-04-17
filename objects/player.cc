@@ -40,6 +40,22 @@ void Player::set_direction(Direction direction) {
   direction_ = direction;
 }
 
+int Player::get_points() const {
+  return points_;
+}
+
+void Player::add_points(int points) {
+  points_ += points;
+}
+
+void Player::add_bomb() {
+  bombs_++;
+}
+
+int Player::get_bomb_power() const {
+  return 1 + points_ / 1000;
+}
+
 void Player::move(int time) {
   move_time_ += time;
   if (move_time_ < velocity_) {
@@ -134,6 +150,10 @@ void Player::move_jump(Object *o) {
 }
 
 void Player::place_bomb() {
+  if (bombs_ <= 0) {
+    return;
+  }
+
   std::vector<Object *>& objs = map_->get_objects();
 
   int x, y;
@@ -157,7 +177,7 @@ void Player::place_bomb() {
   }
 
   // TODO: Set bomb power
-  Bomb *bomb = new Bomb(map_, x, y, 2);
+  Bomb *bomb = new Bomb(map_, x, y, get_bomb_power());
 
   for (Object *o: objs) {
     if (o->get_type() != OBJ_BOMB) {
@@ -170,6 +190,7 @@ void Player::place_bomb() {
   }
 
   objs.push_back(bomb);
+  bombs_--;
 }
 
 void Player::stop() {

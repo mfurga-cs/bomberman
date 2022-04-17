@@ -5,6 +5,10 @@ int Renderer::init(SDL_Window *window) {
   if (renderer_ == NULL) {
     return 1;
   }
+
+  SDL_SetRenderDrawColor(renderer_, 0x9e, 0x9e, 0x9e, 255);
+  SDL_RenderClear(renderer_);
+
   return 0;
 }
 
@@ -29,6 +33,15 @@ int Renderer::load_tiles(const char *fname) {
   return 0;
 }
 
+int Renderer::load_font(const char *fname) {
+  font_ = TTF_OpenFont(fname, 90);
+  if (font_ == NULL) {
+    printf("TTF_OpenFont: %s\n", TTF_GetError());
+    return 1;
+  }
+  return 0;
+}
+
 void Renderer::render_tile(int sx, int sy, int dx, int dy, double angle) const {
   SDL_Rect src = { .x = sx, .y = sy, .w = TILE_WIDTH, .h = TILE_HEIGHT };
   SDL_Rect dst = { .x = dx, .y = dy, .w = TILE_WIDTH, .h = TILE_HEIGHT };
@@ -39,4 +52,46 @@ void Renderer::render_tile(int sx, int sy, int dx, int dy, double angle) const {
 
 void Renderer::render_tile(int sx, int sy, int dx, int dy) const {
   render_tile(sx, sy, dx, dy, 0);
+}
+
+void Renderer::render_string(const char *str, int x, int y) const {
+  render_string_(str, x, y, false);
+}
+
+void Renderer::render_string_right(const char *str, int x, int y) const {
+  render_string_(str, x, y, true);
+}
+
+
+void Renderer::render_string_(const char *str, int x, int y, bool right) const {
+  SDL_Color foreground = { .r = 0x2e, .g = 0x2e, .b = 0x2e, .a = 255 };
+
+  SDL_Surface *text_surf = TTF_RenderText_Solid(font_, str, foreground);
+  if (text_surf == NULL) {
+    puts("TTF_RenderText_Solid failed");
+    return;
+  }
+
+  SDL_Texture *text = SDL_CreateTextureFromSurface(renderer_, text_surf);
+  if (text == NULL) {
+    puts("SDL_CreateTextureFromSurface failed");
+    return;
+  }
+
+  SDL_Rect dst;
+
+  if (right) {
+    dst.x = WINDOW_WIDTH - x - text_surf->w; dst.y = y; dst.w = text_surf->w; dst.h = text_surf->h;
+  } else {
+    dst.x = x; dst.y = y; dst.w = text_surf->w; dst.h = text_surf->h;
+  }
+
+  SDL_RenderCopy(renderer_, text, NULL, &dst);
+
+  SDL_DestroyTexture(text);
+  SDL_FreeSurface(text_surf);
+}
+
+SDL_Renderer *Renderer::get_renderer() {
+  return renderer_;
 }

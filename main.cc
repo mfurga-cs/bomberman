@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <vector>
+#include <string>
 #include <SDL2/SDL.h>
 
 #include "config.h"
@@ -20,6 +21,10 @@ class Game {
   }
 
   int init() {
+    if (TTF_Init() != 0) {
+      return 1;
+    }
+
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS) != 0) {
       return 1;
     }
@@ -43,14 +48,17 @@ class Game {
       return 3;
     }
 
-
     if (renderer_.load_tiles("assets/tiles.bmp") != 0) {
       return 4;
     }
 
+    if (renderer_.load_font("assets/monogram.ttf") != 0) {
+      return 5;
+    }
+
     map_ = new Map(renderer_);
     if (map_->load_map("assets/map1") != 0) {
-      return 5;
+      return 6;
     }
 
     return 0;
@@ -133,7 +141,18 @@ class Game {
       space_wait_ = 0;
     }
     
+    SDL_RenderClear(renderer_.get_renderer());
+
     map_->render();
+    // Render panel.
+
+    std::string points = std::to_string(map_->get_player()->get_points());
+    renderer_.render_string_right(points.c_str(), 20, 0);
+
+    std::string power = "POWER ";
+    power += std::to_string(map_->get_player()->get_bomb_power());
+    renderer_.render_string(power.c_str(), 20, 0);
+
   }
 
   SDL_Window *window_;
