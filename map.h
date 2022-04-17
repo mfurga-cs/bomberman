@@ -3,34 +3,46 @@
 #include <vector>
 #include <memory>
 
+#include "config.h"
 #include "renderer.h"
 #include "objects/object.h"
-#include "objects/wall.h"
-#include "objects/stone.h"
-#include "objects/grass.h"
 #include "objects/player.h"
-
-#define MAP_POS_X   0
-#define MAP_POS_Y   80
-
-#define MAP_TILES_WIDTH 25
-#define MAP_TILES_HEIGHT 15
 
 class Map {
  public:
-  Map(Renderer &renerer): renderer_(renerer) {}
+  Map(Renderer &renderer, int x, int y, int w, int h)
+    : renderer_(renderer), x_(x), y_(y), w_(w), h_(h) {}
+
+  Map(Renderer &renderer)
+    : Map(renderer, MAP_POS_X, MAP_POS_Y, MAP_WIDTH, MAP_HEIGHT) {}
 
   int load_map(const char *fname);
 
   void render();
+
+  void render_tile(int sx, int sy, int dx, int dy) const;
+  void render_tile(int sx, int sy, int dx, int dy, double angle) const;
 
   std::vector<Object *>& get_objects();
   void remove_object(Object *o);
 
   Player *get_player() const;
 
+  int get_x() const { return x_; }
+
+  int get_y() const { return y_; }
+
+  int get_w() const { return w_; }
+
+  int get_h() const { return h_; }
+
  private:
  	Renderer renderer_;
   std::vector<Object*> objects_;
   Player *player_;
+
+  const int x_;
+  const int y_;
+  const int w_;
+  const int h_;
 };

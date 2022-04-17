@@ -1,7 +1,6 @@
 #pragma once
 
 #include "object.h"
-#include "../renderer.h"
 
 enum Direction {
   DIRECTION_UP = 0,
@@ -17,11 +16,18 @@ class Player: public Object {
       set_velocity(150);
       last_animation_ = 0;
     }
+
+  Player(Map *map, int x, int y)
+    : Object(map, x, y), direction_(DIRECTION_DOWN), tile_style_(1) {
+      set_velocity(150);
+      last_animation_ = 0;
+    }
+
   ~Player() {}
 
   ObjectType get_type() const;
 
-  void render(const Renderer &renderer);
+  void render();
 
   void set_velocity(int velocity);
 

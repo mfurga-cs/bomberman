@@ -1,0 +1,20 @@
+#pragma once
+
+#define WINDOW_WIDTH 1200
+#define WINDOW_HEIGHT 800
+
+#define TILE_WIDTH 48
+#define TILE_HEIGHT 48
+
+#define MAP_POS_X 0
+#define MAP_POS_Y 80
+
+#define MAP_WIDTH 1200
+#define MAP_HEIGHT 720
+
+#define MAP_WIDTH_IN_TILES (MAP_WIDTH / TILE_WIDTH)
+#define MAP_HEIGHT_IN_TILES (MAP_HEIGHT / TILE_HEIGHT)
+
+
+
+

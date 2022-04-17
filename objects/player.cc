@@ -6,7 +6,7 @@ ObjectType Player::get_type() const {
   return OBJ_PLAYER;
 }
 
-void Player::render(const Renderer &renderer) {
+void Player::render() {
   int tile_x = 0;
   int tile_y = 0;
 
@@ -29,7 +29,7 @@ void Player::render(const Renderer &renderer) {
     break;
   }
  
-  renderer.render_tile(tile_x, tile_y, x_, y_);
+  map_->render_tile(tile_x, tile_y, x_, y_);
 }
 
 void Player::set_velocity(int velocity) {
@@ -156,7 +156,7 @@ void Player::place_bomb() {
     }
   }
 
-  Bomb *bomb = new Bomb(map_, x, y, TILE_WIDTH, TILE_HEIGHT);
+  Bomb *bomb = new Bomb(map_, x, y);
 
   for (Object *o: objs) {
     if (o->get_type() != OBJ_BOMB) {

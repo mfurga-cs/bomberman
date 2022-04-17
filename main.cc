@@ -2,12 +2,10 @@
 #include <vector>
 #include <SDL2/SDL.h>
 
+#include "config.h"
 #include "objects/bomb.h"
-#include "map.h"
 #include "renderer.h"
-
-#define WINDOW_WIDTH 1200
-#define WINDOW_HEIGHT 800
+#include "map.h"
 
 class Game {
  public:

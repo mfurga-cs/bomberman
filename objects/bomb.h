@@ -7,13 +7,17 @@ class Bomb: public Object {
  public:
   Bomb(Map *map, int x, int y, int w, int h)
     : Object(map, x, y, w, h), explosion_time_(EXPLOSION_TIME) {}
+
+  Bomb(Map *map, int x, int y)
+    : Object(map, x, y), explosion_time_(EXPLOSION_TIME) {}
+
   ~Bomb() {}
 
   ObjectType get_type() const {
     return OBJ_BOMB;
   }
 
-  void render(const Renderer &renderer);
+  void render();
 
   void set_explosion_time(int time);
   int get_explosion_time() const;

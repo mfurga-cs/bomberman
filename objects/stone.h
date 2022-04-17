@@ -1,20 +1,23 @@
 #pragma once
 
 #include "object.h"
-#include "../renderer.h"
 
 class Stone: public Object {
  public:
   Stone(Map *map, int x, int y, int w, int h)
     : Object(map, x, y, w, h) {}
+
+  Stone(Map *map, int x, int y)
+    : Object(map, x, y) {}
+
   ~Stone() {}
 
   ObjectType get_type() const {
     return OBJ_STONE;
   }
 
-  void render(const Renderer &renderer) {
-    renderer.render_tile(TILE_X, TILE_Y, x_, y_);
+  void render() {
+    map_->render_tile(TILE_X, TILE_Y, x_, y_);
   }
 
  private:

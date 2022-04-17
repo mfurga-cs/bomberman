@@ -1,9 +1,7 @@
 #pragma once
 
+#include "config.h"
 #include <SDL2/SDL.h>
-
-#define TILE_WIDTH 48
-#define TILE_HEIGHT 48
 
 class Renderer {
  public:

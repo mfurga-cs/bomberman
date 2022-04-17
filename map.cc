@@ -1,11 +1,14 @@
+#include "map.h"
+#include "objects/wall.h"
+#include "objects/stone.h"
+#include "objects/grass.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <algorithm>
 
-#include "map.h"
-
 int Map::load_map(const char *fname) {
-  char map[(MAP_TILES_WIDTH + 1) * MAP_TILES_HEIGHT];
+  char map[(MAP_WIDTH_IN_TILES + 1) * MAP_HEIGHT_IN_TILES];
 
   FILE *f = fopen(fname, "r");
   if (f == NULL) {
@@ -15,30 +18,30 @@ int Map::load_map(const char *fname) {
   fread(map, 1, sizeof(map), f);
   fclose(f);
 
-  for (int h = 0; h < MAP_TILES_HEIGHT; h++) {
-    for (int w = 0; w < MAP_TILES_WIDTH; w++) {
+  for (int h = 0; h < MAP_HEIGHT_IN_TILES; h++) {
+    for (int w = 0; w < MAP_WIDTH_IN_TILES; w++) {
 
-      int x = MAP_POS_X + w * TILE_WIDTH;
-      int y = MAP_POS_Y + h * TILE_HEIGHT;
+      int x = w * TILE_WIDTH;
+      int y = h * TILE_HEIGHT;
 
-      char c = map[h * (MAP_TILES_WIDTH + 1) + w];
+      char c = map[h * (MAP_WIDTH_IN_TILES + 1) + w];
 
       switch (c) {
         case 'W': {
-          objects_.push_back(new Wall(this, x, y, TILE_WIDTH, TILE_HEIGHT));
+          objects_.push_back(new Wall(this, x, y));
           break;
         }
         case 'S': {
-          objects_.push_back(new Stone(this, x, y, TILE_WIDTH, TILE_HEIGHT));
+          objects_.push_back(new Stone(this, x, y));
           break;
         }
         case ' ': {
-          objects_.push_back(new Grass(this, x, y, TILE_WIDTH, TILE_HEIGHT));
+          objects_.push_back(new Grass(this, x, y));
           break;
         }
         case 'P': {
-          objects_.push_back(new Grass(this, x, y, TILE_WIDTH, TILE_HEIGHT));
-          player_ = new Player(this, x, y, TILE_WIDTH, TILE_HEIGHT);
+          objects_.push_back(new Grass(this, x, y));
+          player_ = new Player(this, x, y);
           break;
         }
       }
@@ -46,6 +49,14 @@ int Map::load_map(const char *fname) {
   }
   
   return 0;
+}
+
+void Map::render_tile(int sx, int sy, int dx, int dy) const {
+  render_tile(sx, sy, dx, dy, 0);
+}
+
+void Map::render_tile(int sx, int sy, int dx, int dy, double angle) const {
+  renderer_.render_tile(sx, sy, x_ + dx, y_ + dy, angle);
 }
 
 std::vector<Object *>& Map::get_objects() {
@@ -66,8 +77,8 @@ Player *Map::get_player() const {
 
 void Map::render() {
   for (Object *o: objects_) {
-    o->render(renderer_);
+    o->render();
   }
-  player_->render(renderer_);
+  player_->render();
 }
 

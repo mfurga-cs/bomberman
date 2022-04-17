@@ -1,20 +1,23 @@
 #pragma once
 
 #include "object.h"
-#include "../renderer.h"
 
 class Grass: public Object {
  public:
   Grass(Map *map, int x, int y, int w, int h)
     : Object(map, x, y, w, h) {}
+
+  Grass(Map *map, int x, int y)
+    : Object(map, x, y) {}
+
   ~Grass() {}
 
   ObjectType get_type() const {
     return OBJ_GRASS;
   }
 
-  void render(const Renderer &renderer) {
-    renderer.render_tile(TILE_X, TILE_Y, x_, y_);
+  void render() {
+    map_->render_tile(TILE_X, TILE_Y, x_, y_);
   }
 
  private:

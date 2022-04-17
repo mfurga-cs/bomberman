@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../renderer.h"
+#include "../config.h"
 
 class Map;
 
@@ -16,6 +16,10 @@ class Object {
  public:
   Object(Map *map, int x, int y, int w, int h)
     : map_(map), x_(x), y_(y), w_(w), h_(h) {}
+
+  Object(Map *map, int x, int y)
+    : Object(map, x, y, TILE_WIDTH, TILE_HEIGHT) {}
+
   virtual ~Object() {};
 
   int get_x() const { return x_; }
@@ -34,7 +38,7 @@ class Object {
   }
 
   virtual ObjectType get_type() const = 0;
-  virtual void render(const Renderer &renderer) = 0;
+  virtual void render() = 0;
 
  protected:
   Map *map_ = nullptr;
