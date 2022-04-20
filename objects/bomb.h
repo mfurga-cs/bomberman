@@ -35,6 +35,7 @@ class Bomb: public StaticObject {
 
   constexpr static int EXPLOSION_TIME = 2000;
   constexpr static int ANIMATION_TIME = 1000;
+  constexpr static int MARGIN = 10;
 
   constexpr static int TILE_BOMB_X = TILE_WIDTH * 4;
   constexpr static int TILE_BOMB_Y = TILE_HEIGHT;

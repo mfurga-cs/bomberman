@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../config.h"
+#include <algorithm>
+#include <cstdio>
 
 class Map;
 
@@ -37,6 +39,26 @@ class Object {
     return x_ < o.x_ + o.w_ && x_ + w_ > o.x_ &&
            y_ < o.y_ + o.h_ && y_ + h_ > o.y_;
   }
+
+  bool check_collision_margin(const Object& o, unsigned margin) {
+    if (!check_collision(o)) {
+      return false;
+    }
+    unsigned x1 = std::max(x_, o.get_x());
+    unsigned x2 = std::min(x_ + w_, o.get_x() + o.get_w());
+    unsigned y1 = std::max(y_, o.get_y());
+    unsigned y2 = std::min(y_ + h_, o.get_y() + o.get_h());
+    return x2 - x1 > margin && y2 - y1 > margin;
+  }
+
+  // A   ---
+  // B  ---
+  
+  // a_x = 2, a_w = 3
+  // b_x = 1, b_w = 3
+
+  // x1 = 2, x2 = 4
+  // 3 - 1 = 2
 
   virtual bool is_static() const {
     return false;

@@ -96,10 +96,16 @@ void Bomb::render() {
 void Bomb::remove_objects_() {
   int sx = this->get_static_x();
   int sy = this->get_static_y();
+  Player *player = map_->get_player();
+  StaticObject *so = map_->get_static_object(sx, sy);
+
+  if (player->check_collision_margin(*so, MARGIN)) {
+    map_->remove_object(player);
+  }
 
   // RIGHT
   for (int i = 1; i <= power_; i++) {
-    StaticObject *so = map_->get_static_object(sx + i, sy);
+    so = map_->get_static_object(sx + i, sy);
     if (so == nullptr || so->get_type() == OBJ_WALL) {
       break;
     }
@@ -109,12 +115,16 @@ void Bomb::remove_objects_() {
       map_->add_object(new Grass(map_, so->get_x(), so->get_y()));
       map_->get_player()->add_points(POINTS_FOR_STONE);
       break;
+    }
+
+    if (player->check_collision_margin(*so, MARGIN)) {
+      map_->remove_object(player);
     }
   }
 
   // LEFT
   for (int i = 1; i <= power_; i++) {
-    StaticObject *so = map_->get_static_object(sx - i, sy);
+   so = map_->get_static_object(sx - i, sy);
     if (so == nullptr || so->get_type() == OBJ_WALL) {
       break;
     }
@@ -124,12 +134,15 @@ void Bomb::remove_objects_() {
       map_->add_object(new Grass(map_, so->get_x(), so->get_y()));
       map_->get_player()->add_points(POINTS_FOR_STONE);
       break;
+    }
+    if (player->check_collision_margin(*so, MARGIN)) {
+      map_->remove_object(player);
     }
   }
 
   // UP
   for (int i = 1; i <= power_; i++) {
-    StaticObject *so = map_->get_static_object(sx, sy - i);
+    so = map_->get_static_object(sx, sy - i);
     if (so == nullptr || so->get_type() == OBJ_WALL) {
       break;
     }
@@ -139,12 +152,15 @@ void Bomb::remove_objects_() {
       map_->add_object(new Grass(map_, so->get_x(), so->get_y()));
       map_->get_player()->add_points(POINTS_FOR_STONE);
       break;
+    }
+    if (player->check_collision_margin(*so, MARGIN)) {
+      map_->remove_object(player);
     }
   }
 
   // DOWN
   for (int i = 1; i <= power_; i++) {
-    StaticObject *so = map_->get_static_object(sx, sy + i);
+    so = map_->get_static_object(sx, sy + i);
     if (so == nullptr || so->get_type() == OBJ_WALL) {
       break;
     }
@@ -154,6 +170,10 @@ void Bomb::remove_objects_() {
       map_->add_object(new Grass(map_, so->get_x(), so->get_y()));
       map_->get_player()->add_points(POINTS_FOR_STONE);
       break;
+    }
+    
+    if (player->check_collision_margin(*so, MARGIN)) {
+      map_->remove_object(player);
     }
   }
 }
