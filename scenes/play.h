@@ -9,7 +9,11 @@ class PlayScene: public Scene {
  public:
   PlayScene(SceneManager *manager, Renderer *renderer, Context *context);
   
+  void init();
+
   void render();
+
+  void end();
 
  private:
   Map *map_;

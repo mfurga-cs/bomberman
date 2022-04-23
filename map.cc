@@ -2,10 +2,17 @@
 #include "objects/wall.h"
 #include "objects/stone.h"
 #include "objects/grass.h"
+#include "objects/enemy.h"
 
 #include <cstdio>
 #include <cstdlib>
 #include <algorithm>
+
+Map::~Map() {
+  for (Object *o: objects_) {
+    delete o;
+  }
+}
 
 int Map::load_map(const char *fname) {
   char map[(MAP_WIDTH_IN_TILES + 1) * MAP_HEIGHT_IN_TILES];
@@ -53,6 +60,15 @@ int Map::load_map(const char *fname) {
           player_ = new Player(this, x, y);
           break;
         }
+        case 'E': {
+          Grass *grass = new Grass(this, x, y);
+          objects_.push_back(grass);
+          static_objects_[grass->get_static_y()][grass->get_static_x()] = grass;
+
+          Enemy *enemy = new Enemy(this, x, y);
+          enemies_.push_back(enemy);
+          break;
+        }
       }
     }
   }
@@ -98,6 +114,10 @@ std::vector<Object *>& Map::get_objects() {
   return objects_;
 }
 
+std::vector<Enemy *>& Map::get_enemies() {
+  return enemies_;
+}
+
 void Map::add_object(Object *o) {
   objects_.push_back(o);
   if (o->is_static() && o->get_type() != OBJ_BOMB) {
@@ -120,6 +140,14 @@ void Map::remove_object(Object *o) {
   delete o;
 }
 
+void Map::remove_enemy(Enemy *e) {
+  std::vector<Enemy *>::iterator pos = std::find(enemies_.begin(), enemies_.end(), e);
+  if (pos != enemies_.end()) {
+    enemies_.erase(pos);
+  }
+  delete e;
+}
+
 StaticObject *Map::get_static_object(int x, int y) {
   if (x < 0 || y < 0 || x >= MAP_WIDTH_IN_TILES || y >= MAP_HEIGHT_IN_TILES) {
     return nullptr;
@@ -132,9 +160,16 @@ Player *Map::get_player() const {
 }
 
 void Map::render() {
+  std::vector<Enemy *> enemies;
+
   for (Object *o: objects_) {
     o->render();
   }
+
+  for (Enemy *e: enemies_) {
+    e->render();
+  }
+
   player_->render();
 }
 

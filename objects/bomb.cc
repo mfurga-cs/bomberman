@@ -93,14 +93,16 @@ void Bomb::render() {
   }
 }
 
-void Bomb::remove_objects_() {
+void Bomb::remove_objects_(bool remove) {
   int sx = this->get_static_x();
   int sy = this->get_static_y();
   Player *player = map_->get_player();
   StaticObject *so = map_->get_static_object(sx, sy);
 
+  remove_enemy_(so);
+
   if (player->check_collision_margin(*so, MARGIN)) {
-    map_->remove_object(player);
+    player_killed_ = true;
   }
 
   // RIGHT
@@ -110,15 +112,17 @@ void Bomb::remove_objects_() {
       break;
     }
 
-    if (so->get_type() == OBJ_STONE) {
+    if (so->get_type() == OBJ_STONE && remove) {
       map_->remove_object(so);
       map_->add_object(new Grass(map_, so->get_x(), so->get_y()));
       map_->get_player()->add_points(POINTS_FOR_STONE);
       break;
     }
 
+    remove_enemy_(so);
+
     if (player->check_collision_margin(*so, MARGIN)) {
-      map_->remove_object(player);
+      player_killed_ = true;
     }
   }
 
@@ -129,14 +133,17 @@ void Bomb::remove_objects_() {
       break;
     }
 
-    if (so->get_type() == OBJ_STONE) {
+    if (so->get_type() == OBJ_STONE && remove) {
       map_->remove_object(so);
       map_->add_object(new Grass(map_, so->get_x(), so->get_y()));
       map_->get_player()->add_points(POINTS_FOR_STONE);
       break;
     }
+
+    remove_enemy_(so);
+
     if (player->check_collision_margin(*so, MARGIN)) {
-      map_->remove_object(player);
+      player_killed_ = true;
     }
   }
 
@@ -147,14 +154,17 @@ void Bomb::remove_objects_() {
       break;
     }
 
-    if (so->get_type() == OBJ_STONE) {
+    if (so->get_type() == OBJ_STONE && remove) {
       map_->remove_object(so);
       map_->add_object(new Grass(map_, so->get_x(), so->get_y()));
       map_->get_player()->add_points(POINTS_FOR_STONE);
       break;
     }
+
+    remove_enemy_(so);
+
     if (player->check_collision_margin(*so, MARGIN)) {
-      map_->remove_object(player);
+      player_killed_ = true;
     }
   }
 
@@ -165,15 +175,26 @@ void Bomb::remove_objects_() {
       break;
     }
 
-    if (so->get_type() == OBJ_STONE) {
+    if (so->get_type() == OBJ_STONE && remove) {
       map_->remove_object(so);
       map_->add_object(new Grass(map_, so->get_x(), so->get_y()));
       map_->get_player()->add_points(POINTS_FOR_STONE);
       break;
     }
+
+    remove_enemy_(so);
     
     if (player->check_collision_margin(*so, MARGIN)) {
-      map_->remove_object(player);
+      player_killed_ = true;
+    }
+  }
+}
+
+void Bomb::remove_enemy_(StaticObject *so) {
+  for (Enemy *e: map_->get_enemies()) {
+    if (e->check_collision_margin(*so, MARGIN)) {
+      map_->remove_enemy(e);
+      map_->get_player()->add_points(POINTS_FOR_ENEMY);
     }
   }
 }
@@ -189,9 +210,18 @@ void Bomb::decrease_explosion_time(int delta) {
     tile_style_ = 2;
   }
 
+  if (explosion_time_ <= 0) {
+    remove_objects_(false);
+  }
+
   if (-1 * explosion_time_ > ANIMATION_TIME) {
-    remove_objects_();
     map_->get_player()->add_bomb();
+    if (player_killed_) {
+      map_->get_player()->set_lose();
+    }
+
+    remove_objects_(true);
+
     map_->remove_object(this);
   }
 }

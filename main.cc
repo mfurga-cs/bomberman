@@ -18,6 +18,8 @@ class Game {
   }
 
   int init() {
+    srand(time(0));
+
     if (TTF_Init() != 0) {
       return 1;
     }
@@ -49,10 +51,6 @@ class Game {
       return 4;
     }
 
-    if (renderer_.load_font("assets/monogram.ttf") != 0) {
-      return 5;
-    }
-
     manager_ = new SceneManager(&renderer_, &context_);
 
     return 0;
@@ -63,15 +61,16 @@ class Game {
     context_.t_diff = 0;
 
     SDL_Event event;
-    bool end = false;
+    context_.end = false;
 
+    // manager_->set_scene(SCENE_GAME_OVER);
     manager_->set_scene(SCENE_PLAY);
 
-    while (!end) {
+    while (!context_.end) {
 
       while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
-          end = true;
+          context_.end = true;
         }
 
         if (event.type == SDL_KEYDOWN) {

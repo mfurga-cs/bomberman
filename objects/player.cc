@@ -193,6 +193,14 @@ void Player::place_bomb() {
   bombs_--;
 }
 
+void Player::set_lose() {
+  lose_ = true;
+}
+
+bool Player::get_lose() {
+  return lose_;
+}
+
 void Player::stop() {
   // TODO: Move to animation.
   tile_style_ = 1;

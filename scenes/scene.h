@@ -12,7 +12,11 @@ class Scene {
 
   virtual ~Scene() {};
 
+  virtual void init() = 0;
+
   virtual void render() = 0;
+
+  virtual void end() = 0;
 
  protected:
   SceneManager *manager_;

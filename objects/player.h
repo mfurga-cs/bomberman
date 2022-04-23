@@ -2,13 +2,6 @@
 
 #include "object.h"
 
-enum Direction {
-  DIRECTION_UP = 0,
-  DIRECTION_RIGHT,
-  DIRECTION_DOWN,
-  DIRECTION_LEFT
-};
-
 class Player: public Object {
  public:
   Player(Map *map, int x, int y, int w, int h)
@@ -38,6 +31,9 @@ class Player: public Object {
 
   void add_bomb();
   int get_bomb_power() const;
+
+  bool get_lose();
+  void set_lose();
  
   void move(int time);
 
@@ -53,6 +49,7 @@ class Player: public Object {
   int move_time_ = 0;
   int points_ = 0;
   int bombs_ = 1;
+  bool lose_ = false;
 
   // TODO: Move to animation
   int tile_style_;

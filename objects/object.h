@@ -6,12 +6,20 @@
 
 class Map;
 
+enum Direction {
+  DIRECTION_UP = 0,
+  DIRECTION_RIGHT,
+  DIRECTION_DOWN,
+  DIRECTION_LEFT
+};
+
 enum ObjectType {
   OBJ_WALL = 0,
   OBJ_STONE,
   OBJ_GRASS,
   OBJ_BOMB,
-  OBJ_PLAYER
+  OBJ_PLAYER,
+  OBJ_ENEMY
 };
 
 class Object {

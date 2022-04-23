@@ -27,14 +27,17 @@ class Bomb: public StaticObject {
 
  private:
 
-  void remove_objects_();
+  void remove_objects_(bool remove);
+
+  void remove_enemy_(StaticObject *so);
 
   int power_;
   int explosion_time_;
   int tile_style_ = 0;
+  bool player_killed_ = false;
 
   constexpr static int EXPLOSION_TIME = 2000;
-  constexpr static int ANIMATION_TIME = 1000;
+  constexpr static int ANIMATION_TIME = 700;
   constexpr static int MARGIN = 10;
 
   constexpr static int TILE_BOMB_X = TILE_WIDTH * 4;
