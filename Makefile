@@ -1,14 +1,17 @@
 CC = g++
 CFLAGS = -Wall -Wextra -lSDL2 -lSDL2_ttf
-CFLAGS_DEBUG = -g
 
-FILES = objects/player.cc objects/bomb.cc objects/enemy.cc scenes/play.cc scenes/game_over.cc renderer.cc map.cc main.cc
+SRCS = objects/player.cc \
+			 objects/bomb.cc \
+			 objects/enemy.cc \
+			 scenes/play.cc \
+			 scenes/game_over.cc \
+			 renderer.cc \
+			 map.cc \
+			 main.cc
 
 all:
-	$(CC) $(FILES) -o main $(CFLAGS)
-
-debug:
-	$(CC) $(FILES) -o main $(CFLAGS) $(CFLAGS_DEBUG)
+	$(CC) $(SRCS) -o main $(CFLAGS)
 
 run: all
 	./main

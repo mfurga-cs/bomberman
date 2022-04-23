@@ -6,13 +6,13 @@ class Player: public Object {
  public:
   Player(Map *map, int x, int y, int w, int h)
     : Object(map, x, y, w, h), direction_(DIRECTION_DOWN), tile_style_(1) {
-      set_velocity(150);
+      set_velocity(PLAYER_VELOCITY);
       last_animation_ = 0;
     }
 
   Player(Map *map, int x, int y)
     : Object(map, x, y), direction_(DIRECTION_DOWN), tile_style_(1) {
-      set_velocity(150);
+      set_velocity(PLAYER_VELOCITY);
       last_animation_ = 0;
     }
 
@@ -32,6 +32,8 @@ class Player: public Object {
   void add_bomb();
   int get_bomb_power() const;
 
+  int get_max_bombs() const;
+
   bool get_lose();
   void set_lose();
  
@@ -49,6 +51,7 @@ class Player: public Object {
   int move_time_ = 0;
   int points_ = 0;
   int bombs_ = 1;
+  int max_bombs_ = 1;
   bool lose_ = false;
 
   // TODO: Move to animation

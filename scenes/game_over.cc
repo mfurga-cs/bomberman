@@ -35,17 +35,21 @@ void GameOverScene::render() {
   SDL_Color color = { .r = 0x2e, .g = 0x2e, .b = 0x2e, .a = 255 };
   SDL_Color active = { .r = 0x38, .g = 0x95, .b = 0x52, .a = 255 };
 
-  renderer_->render_string("YOU LOSE", 90, color, 400, 300);
+  renderer_->render_string(context_->message, 80, color, 380, 270);
+  std::string score = "YOUR SCORE: ";
+  score += std::to_string(context_->points);
+
+  renderer_->render_string(score.c_str(), 30, color, 380, 350);
 
   switch (state_) {
     case GAME_OVER_PLAY_AGAIN:
-      renderer_->render_string("PLAY AGAIN", 40, active, 400, 400);
-      renderer_->render_string("EXIT", 40, color, 400, 450);
+      renderer_->render_string("PLAY AGAIN", 40, active, 380, 400);
+      renderer_->render_string("EXIT", 40, color, 380, 450);
     break;
 
     case GAME_OVER_EXIT:
-      renderer_->render_string("PLAY AGAIN", 40, color, 400, 400);
-      renderer_->render_string("EXIT", 40, active, 400, 450);
+      renderer_->render_string("PLAY AGAIN", 40, color, 380, 400);
+      renderer_->render_string("EXIT", 40, active, 380, 450);
     break;
   }
 }

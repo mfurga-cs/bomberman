@@ -7,13 +7,13 @@ class Enemy: public Object {
   Enemy(Map *map, int x, int y, int w, int h)
     : Object(map, x, y, w, h), direction_(DIRECTION_DOWN),
       tile_style_(5), last_animation_(0) {
-      set_velocity(150);
+      set_velocity(ENEMY_VELOCITY);
     }
 
   Enemy(Map *map, int x, int y)
     : Object(map, x, y), direction_(DIRECTION_DOWN),
       tile_style_(5), last_animation_(0) {
-      set_velocity(150);
+      set_velocity(ENEMY_VELOCITY);
     }
 
   ~Enemy() {}
@@ -43,6 +43,6 @@ class Enemy: public Object {
   int change_direction_ = 0;
 
   constexpr static int JUMP_FROM = 8;
-  constexpr static int ANIMATION_PER_PIXELS = 12;
+  constexpr static int ANIMATION_PER_PIXELS = 10;
   constexpr static int MARGIN = 6;
 };

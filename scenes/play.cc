@@ -11,7 +11,7 @@ PlayScene::PlayScene(SceneManager *manager, Renderer *renderer, Context *context
 
 void PlayScene::init() {
   map_ = new Map(*renderer_);
-  if (map_->load_map("assets/map1") != 0) {
+  if (map_->load_map(MAP_LOCATION) != 0) {
     puts("Failed to load map.");
     return;
   }
@@ -54,6 +54,16 @@ void PlayScene::render() {
   }
 
   if (player->get_lose()) {
+    context_->points = player->get_points();
+    context_->message = "GAME OVER";
+    SDL_Delay(500);
+    manager_->set_scene(SCENE_GAME_OVER);
+    return;
+  }
+
+  if (map_->get_stones_count() == 0 && map_->get_enemies().size() == 0) {
+    context_->points = player->get_points();
+    context_->message = "YOU WIN";
     SDL_Delay(500);
     manager_->set_scene(SCENE_GAME_OVER);
     return;
@@ -72,14 +82,17 @@ void PlayScene::render() {
 
   map_->render();
   // Render panel.
-  SDL_Color color = { .r = 0x2e, .g = 0x2e, .b = 0x2e, .a = 255 };
+  SDL_Color color = { .r = 0x2a, .g = 0x2a, .b = 0x2a, .a = 255 };
 
   std::string points = std::to_string(map_->get_player()->get_points());
-  renderer_->render_string_right(points.c_str(), 60, color, 20, 10);
+  renderer_->render_string_right(points.c_str(), 50, color, 20, 15);
 
-  std::string power = "POWER ";
-  power += std::to_string(map_->get_player()->get_bomb_power());
-  renderer_->render_string(power.c_str(), 60, color, 20, 10);
+  std::string info = "BOMBS ";
+  info += std::to_string(map_->get_player()->get_max_bombs());
+  info += "  POWER ";
+  info += std::to_string(map_->get_player()->get_bomb_power());
+
+  renderer_->render_string(info.c_str(), 50, color, 20, 15);
 }
 
 void PlayScene::end() {

@@ -15,6 +15,16 @@
 #define MAP_WIDTH_IN_TILES ((MAP_WIDTH) / (TILE_WIDTH))
 #define MAP_HEIGHT_IN_TILES ((MAP_HEIGHT) / (TILE_HEIGHT))
 
+#define MAP_LOCATION "assets/map"
+#define FONT_LOCATION "assets/bold.ttf"
+
 #define POINTS_FOR_STONE 100
 #define POINTS_FOR_ENEMY 1000
+
+#define BOMB_POWER_PER_POINTS 2000
+
+#define PLAYER_VELOCITY 150
+#define ENEMY_VELOCITY 110
+
+
 

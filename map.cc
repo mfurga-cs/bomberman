@@ -43,6 +43,7 @@ int Map::load_map(const char *fname) {
         case 'S': {
           Stone *stone = new Stone(this, x, y);
           objects_.push_back(stone);
+          stone_count_++;
           static_objects_[stone->get_static_y()][stone->get_static_x()] = stone;
           break;
         }
@@ -137,7 +138,15 @@ void Map::remove_object(Object *o) {
     static_objects_[so->get_static_y()][so->get_static_x()] = nullptr;
   }
 
+  if (o->get_type() == OBJ_STONE) {
+    stone_count_--;
+  }
+
   delete o;
+}
+
+int Map::get_stones_count() const {
+  return stone_count_;
 }
 
 void Map::remove_enemy(Enemy *e) {

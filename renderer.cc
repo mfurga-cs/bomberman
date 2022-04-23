@@ -54,7 +54,7 @@ void Renderer::render_string_right(const char *str, int size, SDL_Color& color, 
 }
 
 void Renderer::render_string_(const char *str, int size, SDL_Color& color, int x, int y, bool right) const {
-  TTF_Font *font = TTF_OpenFont("assets/bold.ttf", size);
+  TTF_Font *font = TTF_OpenFont(FONT_LOCATION, size);
   if (font == NULL) {
     printf("TTF_OpenFont: %s\n", TTF_GetError());
     return;

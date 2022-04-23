@@ -40,6 +40,8 @@ class Map {
 
   Player *get_player() const;
 
+  int get_stones_count() const;
+
   int get_x() const { return x_; }
 
   int get_y() const { return y_; }
@@ -55,6 +57,7 @@ class Map {
   StaticObject *static_objects_[MAP_HEIGHT_IN_TILES][MAP_WIDTH_IN_TILES] = { nullptr };
 
   Player *player_;
+  int stone_count_ = 0;
 
   const int x_;
   const int y_;

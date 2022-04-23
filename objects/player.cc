@@ -50,10 +50,15 @@ void Player::add_points(int points) {
 
 void Player::add_bomb() {
   bombs_++;
+  max_bombs_ = std::max(max_bombs_, bombs_);
+}
+
+int Player::get_max_bombs() const {
+  return max_bombs_;
 }
 
 int Player::get_bomb_power() const {
-  return 1 + points_ / 1000;
+  return 1 + points_ / BOMB_POWER_PER_POINTS;
 }
 
 void Player::move(int time) {

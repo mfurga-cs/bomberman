@@ -83,6 +83,18 @@ void Enemy::move(int time) {
       break;
     }
   }
+
+  for (Enemy *e: map_->get_enemies()) {
+    if (e == this) {
+      continue;
+    }
+    if (e->check_collision_margin(*this, MARGIN)) {
+      set_next_direction();
+      x_ = px;
+      y_ = py;
+      break;
+    }
+  }
   
   if (map_->get_player()->check_collision_margin(*this, MARGIN)) {
     map_->get_player()->set_lose();

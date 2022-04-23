@@ -195,6 +195,7 @@ void Bomb::remove_enemy_(StaticObject *so) {
     if (e->check_collision_margin(*so, MARGIN)) {
       map_->remove_enemy(e);
       map_->get_player()->add_points(POINTS_FOR_ENEMY);
+      map_->get_player()->add_bomb();
     }
   }
 }
