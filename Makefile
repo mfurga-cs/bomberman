@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -Wextra -lSDL2 -lSDL2_ttf
+CFLAGS = -std=c++11 -Wall -Wextra -lSDL2 -lSDL2_ttf
 
 SRCS = objects/player.cc \
 			 objects/bomb.cc \

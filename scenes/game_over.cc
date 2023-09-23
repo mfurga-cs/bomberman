@@ -1,5 +1,6 @@
 #include "game_over.h"
 #include "scene_manager.h"
+#include <sstream>
 
 GameOverScene::GameOverScene(SceneManager *manager, Renderer *renderer, Context *context)
   : Scene(manager, renderer, context), state_(GAME_OVER_PLAY_AGAIN) {}

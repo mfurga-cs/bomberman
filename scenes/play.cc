@@ -4,6 +4,7 @@
 #include "../objects/enemy.h"
 
 #include <SDL2/SDL.h>
+#include <sstream>
 
 PlayScene::PlayScene(SceneManager *manager, Renderer *renderer, Context *context)
   : Scene(manager, renderer, context) {
